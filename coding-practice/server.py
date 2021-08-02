@@ -15,20 +15,37 @@ def show_form():
     return render_template("form.html")
 
 
-@app.route('/save-name')
-def show_results():
+@app.route('/save-name', methods=['POST'])
+def save_name():
 
-    user_name = request.form.args("name")
+    user_name = request.form.get("name")
 
     session["name"] = user_name
 
-    return redirect('/')
+    return redirect('/form')
 
 
-@app.route('/results')
+@app.route('/results', methods=['POST'])
 def show_results():
 
-    return render_template("results.html")
+    cheery = request.form.get("cheery")
+    honest = request.form.get("honest")
+    dreary = request.form.get("dreary")
+
+    if cheery and honest and dreary:
+        msg = "With fewer humans on the planet, at least nature has a better chance of surviving."
+    elif cheery and honest and not dreary:
+        msg = "You are a wonderful human being."
+    elif cheery and not honest and not dreary:
+        msg = "All humans are good people."
+    elif not cheery and honest and dreary:
+        msg = "Most humans act in their own self interest, sometimes at the expense of others."
+    elif not cheery and not honest and dreary:
+        msg = "Climate change will soon render the human population extinct."
+    elif not cheery and not honest and not dreary:
+        msg = "Tomorrow will be the same as yesterday."
+
+    return render_template("results.html", msg=msg)
 
 
 if __name__ == "__main__":
